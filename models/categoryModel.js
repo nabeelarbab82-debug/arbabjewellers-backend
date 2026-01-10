@@ -20,7 +20,6 @@ const categorySchema = new mongoose.Schema(
     slug: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
     },
     descriptionEn: {
@@ -78,7 +77,8 @@ categorySchema.virtual("children", {
 
 // Index for better query performance
 categorySchema.index({ level: 1, parent: 1 });
-categorySchema.index({ slug: 1 });
+// Composite unique index: slug must be unique within the same parent
+categorySchema.index({ slug: 1, parent: 1 }, { unique: true });
 
 // Pre-save middleware to generate slug
 categorySchema.pre("save", async function (next) {

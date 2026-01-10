@@ -173,12 +173,15 @@ exports.createCategory = async (req, res) => {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-    // Check if slug exists
-    const existingCategory = await Category.findOne({ slug });
+    // Check if slug exists under the same parent
+    const existingCategory = await Category.findOne({
+      slug,
+      parent: parent || null,
+    });
     if (existingCategory) {
       return res.status(400).json({
         success: false,
-        message: "Category with this name already exists",
+        message: "Category with this name already exists under the same parent",
       });
     }
 
@@ -248,10 +251,27 @@ exports.updateCategory = async (req, res) => {
 
     // Update slug if name changed
     if (nameEn && nameEn !== category.nameEn) {
-      category.slug = nameEn
+      const newSlug = nameEn
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
+
+      // Check if new slug already exists under the same parent
+      const existingCategory = await Category.findOne({
+        slug: newSlug,
+        parent: category.parent,
+        _id: { $ne: category._id },
+      });
+
+      if (existingCategory) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Category with this name already exists under the same parent",
+        });
+      }
+
+      category.slug = newSlug;
     }
 
     await category.save();
