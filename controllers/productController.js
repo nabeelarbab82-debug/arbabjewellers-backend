@@ -5,6 +5,7 @@ const {
   buildFilterQuery,
   buildSortQuery,
 } = require("../utils/helpers");
+const mongoose = require("mongoose");
 
 // @desc    Get all products with filters
 // @route   GET /api/products
@@ -28,9 +29,17 @@ exports.getAllProducts = async (req, res) => {
     // Build filter query
     const filterQuery = { isActive: true };
 
-    if (mainCategory) filterQuery.mainCategory = mainCategory;
-    if (subCategory) filterQuery.subCategory = subCategory;
-    if (baseCategory) filterQuery.baseCategory = baseCategory;
+    // Apply all provided category filters (cumulative)
+    if (mainCategory) {
+      filterQuery.mainCategory = new mongoose.Types.ObjectId(mainCategory);
+    }
+    if (subCategory) {
+      filterQuery.subCategory = new mongoose.Types.ObjectId(subCategory);
+    }
+    if (baseCategory) {
+      filterQuery.baseCategory = new mongoose.Types.ObjectId(baseCategory);
+    }
+
     if (featured === "true") filterQuery.isFeatured = true;
     if (minPrice || maxPrice) {
       filterQuery.price = {};
