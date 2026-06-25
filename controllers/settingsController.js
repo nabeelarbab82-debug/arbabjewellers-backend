@@ -37,6 +37,8 @@ exports.updateSettings = async (req, res) => {
       currency,
       shippingFee,
       taxRate,
+      contactInfo,
+      socialMedia,
       emailConfig,
     } = req.body;
 
@@ -51,6 +53,12 @@ exports.updateSettings = async (req, res) => {
       if (currency !== undefined) settings.currency = currency;
       if (shippingFee !== undefined) settings.shippingFee = shippingFee;
       if (taxRate !== undefined) settings.taxRate = taxRate;
+      if (contactInfo !== undefined) {
+        settings.contactInfo = { ...settings.contactInfo, ...contactInfo };
+      }
+      if (socialMedia !== undefined) {
+        settings.socialMedia = { ...settings.socialMedia, ...socialMedia };
+      }
       if (emailConfig !== undefined) {
         settings.emailConfig = { ...settings.emailConfig, ...emailConfig };
       }

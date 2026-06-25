@@ -134,6 +134,21 @@ exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
 
+    // Validate inputs
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide current password and new password",
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be at least 6 characters long",
+      });
+    }
+
     const admin = await Admin.findById(req.admin._id).select("+password");
 
     if (!admin) {
@@ -153,15 +168,20 @@ exports.changePassword = async (req, res) => {
       });
     }
 
-    // Update password
+    // Update password - the pre-save hook will hash it
     admin.password = newPassword;
     await admin.save();
+
+    // Generate new token
+    const token = generateToken(admin._id);
 
     res.status(200).json({
       success: true,
       message: "Password changed successfully",
+      token, // Return new token so user stays logged in
     });
   } catch (error) {
+    console.error("Change password error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",

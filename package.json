@@ -6,8 +6,10 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "build": "echo Build complete - Backend ready for deployment",
     "seed": "node seedEmailTemplates.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+    
   },
   "keywords": [
     "ecommerce",

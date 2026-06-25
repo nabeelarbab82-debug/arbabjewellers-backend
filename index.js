@@ -56,6 +56,7 @@ app.use("/api/admin/contacts", contactRoutes);
 app.use("/api/company", companyRoutes);
 app.use("/api/admin/company", companyRoutes);
 app.use("/api/admin/email-templates", emailTemplateRoutes);
+app.use("/api/settings", settingsRoutes); // Public settings endpoint
 app.use("/api/admin/settings", settingsRoutes);
 app.use("/api/admin/dashboard", dashboardRoutes);
 app.use("/api/upload", uploadRoutes);

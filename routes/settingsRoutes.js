@@ -6,7 +6,10 @@ const {
 } = require("../controllers/settingsController");
 const { protect } = require("../middleware/authMiddleware");
 
-// All routes require authentication
+// Public route for getting settings
+router.get("/public", getSettings);
+
+// Protected routes require authentication
 router.use(protect);
 
 router.get("/", getSettings);
